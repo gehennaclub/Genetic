@@ -1,0 +1,6 @@
+C:\Users\JST_WATE\Downloads\Signée\Генетический\Генетический\bin\Debug\Генетический.dll
+C:\Users\JST_WATE\Downloads\Signée\Генетический\Генетический\bin\Debug\Генетический.pdb
+C:\Users\JST_WATE\Downloads\Signée\Генетический\Генетический\obj\Debug\Генетический.csproj.CoreCompileInputs.cache
+C:\Users\JST_WATE\Downloads\Signée\Генетический\Генетический\obj\Debug\Генетический.dll
+C:\Users\JST_WATE\Downloads\Signée\Генетический\Генетический\obj\Debug\Генетический.pdb
+C:\Users\JST_WATE\Downloads\Signée\Генетический\Генетический\obj\Debug\Генетический.csprojAssemblyReference.cache
