@@ -10,11 +10,23 @@ namespace Генетический.Tools
     {
         public static string display_dna(Types.Child<T> child)
         {
-            string buffer = "";
+            string buffer = $"|";
 
             foreach (Types.Gene<T> gene in child.dna.key)
             {
-                buffer += $"{gene.value} -> ";
+                buffer += $"{gene.value}|";
+            }
+
+            return (buffer);
+        }
+
+        public static string display_parent(Types.Child<T> child)
+        {
+            string buffer = $"|";
+
+            foreach (Types.Gene<T> gene in child.heredity.key)
+            {
+                buffer += $"{gene.value}|";
             }
 
             return (buffer);

@@ -8,8 +8,8 @@ namespace Генетический.Settings
 {
     public class Profile<T>
     {
-        public List<T> target { get; set; }
-        public List<T> choices { get; set; }
+        public Types.Dna<T> target { get; set; }
+        public Types.Dna<T> choices { get; set; }
         public Children children = new Children();
 
         public class Children

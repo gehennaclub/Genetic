@@ -22,6 +22,7 @@ namespace Генетический.Core
         {
             this.profile = profile;
             status = State.not_found;
+            children = new List<Types.Child<T>>();
             selection = new List<Types.Child<T>>();
         }
 
@@ -32,47 +33,84 @@ namespace Генетический.Core
 
             while (status == State.not_found)
             {
-                Console.WriteLine($"Generation {generation}:\n");
-
                 if (selection.Count > 0)
                 {
-                    parent = selection[selection.Count].dna;
+                    parent = copy_dna(selection[selection.Count - 1].dna);
                 } else
                 {
-                    parent = profile.children.default_dna;
+                    parent = copy_dna(profile.children.default_dna);
                 }
-                children = init_generation(parent);
+                Console.WriteLine($"Generation {generation}: {parent.score.score_current}");
+                children = init_generation(parent, generation);
 
                 foreach (Types.Child<T> child in children)
                 {
-                    Console.WriteLine($"Current dna: {Tools.Tools<T>.display_dna(child)}");
-                    Console.WriteLine($"Dna history: {child.dna.mutations.Count}");
-                    if (child.dna.score.score_current > parent.score.score_current)
+                    if (add(child) == true)
                     {
-                        Console.WriteLine($"Elite found: {child.dna.score.score_current}");
+                        Logger.Logger.log($"[ ELIT ] {Tools.Tools<T>.display_dna(child)}");
                         selection.Add(child);
-                        if (child.dna.score.score_current == profile.target.Count)
+                        if (child.dna.score.score_current == profile.target.key.Count)
                             status = State.found;
                     }
                 }
                 generation++;
 
                 // BYPASS
-                if (generation == 10)
-                {
-                    status = State.found;
-                }
+                //if (generation == 10)
+                //{
+                //    status = State.found;
+                //}
             }
+
+            Console.WriteLine("Success");
         }
 
-        private List<Types.Child<T>> init_generation(Types.Dna<T> dna)
+        private bool add(Types.Child<T> elite)
+        {
+            if (elite.dna.score.score_current < profile.target.key.Count)
+            {
+                foreach (Types.Child<T> child in selection)
+                {
+                    if ((child.dna.score.score_current >= elite.dna.score.score_current) || (child.dna.score.score_current <= child.heredity.score.score_current))
+                    {
+                        return (false);
+                    }
+                }
+            } else if (status == State.found)
+            {
+                return (false);
+            }
+
+            return (true);
+        }
+
+        private Types.Dna<T> copy_dna(Types.Dna<T> dna)
+        {
+            List<Types.Gene<T>> genes = new List<Types.Gene<T>>();
+            uint score = dna.score.score_current;
+
+            foreach (Types.Gene<T> gene in dna.key)
+            {
+                genes.Add(gene);
+            }
+
+            return (new Types.Dna<T>(genes, score, dna.mutations));
+        }
+
+        private List<Types.Child<T>> init_generation(Types.Dna<T> dna, uint gene)
         {
             List<Types.Child<T>> generation = new List<Types.Child<T>>();
 
             for (int i = 0; i < profile.children.count; i++)
             {
-                generation.Add(new Types.Child<T>(dna, profile.choices, profile.target, profile.children.mutations_maximum));
-                generation[i].mutate();
+                Logger.Logger.log($"[ LOAD ] child: {i}");
+                generation.Add(new Types.Child<T>(dna, gene, profile.choices, profile.target, profile.children.mutations_maximum));
+                Logger.Logger.log($"[ WAIT ] child: {i}");
+                generation[generation.Count - 1].mutate();
+                Logger.Logger.log($"[ DONE ] child: {i}");
+                Logger.Logger.log($"[ PRNT ] {Tools.Tools<T>.display_parent(generation[generation.Count - 1])}");
+                Logger.Logger.log($"[ PPSR ] {generation[generation.Count - 1].heredity.score.score_current}");
+                Logger.Logger.log($"[ DATA ] {Tools.Tools<T>.display_dna(generation[generation.Count - 1])}");
             }
 
             return (generation);
